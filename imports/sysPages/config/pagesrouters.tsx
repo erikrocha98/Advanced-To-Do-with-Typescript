@@ -5,7 +5,7 @@ import { ResetPassword } from '../../sysPages/pages/resetPassword/resetPassword'
 import { PasswordRecovery } from '../../sysPages/pages/recoveryPassword/passwordRecovery';
 import { IRoute } from '../../modules/modulesTypings';
 import { NoPermission } from '../../sysPages/pages/noPermission/noPermission';
-import {WelcomePage} from '../../sysPages/pages/welcomePage/welcomePage';
+import { WelcomePage } from '../pages/welcomePage/welcomePage';
 import SignInPage from '../pages/signIn/signIn';
 import { HomeResources, SysFormTestPageResources } from './resources';
 import SysFormPlayground from '../../sysPages/pages/sysFormPlayground/sysFormPlayground';

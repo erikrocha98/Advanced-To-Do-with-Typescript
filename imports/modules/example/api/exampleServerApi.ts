@@ -47,38 +47,21 @@ class ExampleServerApi extends ProductServerBase<IExample> {
 				}
 			});
 		});
-
-	// 	this.addRestEndpoint(
-	// 		'view',
-	// 		(params, options) => {
-	// 			console.log('Params', params);
-	// 			console.log('options.headers', options.headers);
-	// 			return { status: 'ok' };
-	// 		},
-	// 		['post']
-	// 	);
-
-	// 	this.addRestEndpoint(
-	// 		'view/:exampleId',
-	// 		(params, _options) => {
-	// 			console.log('Rest', params);
-	// 			if (params.exampleId) {
-	// 				return self
-	// 					.defaultCollectionPublication(
-	// 						{
-	// 							_id: params.exampleId
-	// 						},
-	// 						{}
-	// 					)
-	// 					.fetch();
-	// 			} else {
-	// 				return { ...params };
-	// 			}
-	// 		},
-	// 		['get']
-	// 	);
-	// }
+		
+		this.registerMethod("showRecentTasks" , this.showRecentTasks.bind(this));
+		
 	}
-}
 
+	showRecentTasks():IExample[]{
+		return this.getCollectionInstance().find(
+			{},
+			{
+				sort:{updatedAt: -1},
+				limit:5
+			}
+		).fetch();
+	}
+	
+}
 export const exampleServerApi = new ExampleServerApi();
+

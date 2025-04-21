@@ -9,6 +9,8 @@ class ExampleApi extends ProductBase<IExample> {
 			enableSubscribeObserver: true
 		});
 	}
+
+	showRecentTasks = (callback: (error:Meteor.Error, result:IExample[])=>void) => this.callMethod('showRecentTasks', {}, callback);
 }
 
 export const exampleApi = new ExampleApi();
