@@ -56,7 +56,7 @@ class ExampleServerApi extends ProductServerBase<IExample> {
 		return this.getCollectionInstance().find(
 			{},
 			{
-				sort:{updatedAt: -1},
+				sort:{createdat: -1},
 				limit:5
 			}
 		).fetch();

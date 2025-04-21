@@ -16,6 +16,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Checkbox from "@mui/material/Checkbox";
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import Button from "@mui/material/Button";
 
 
 export const WelcomePage: React.FC = () => {
@@ -40,10 +41,10 @@ export const WelcomePage: React.FC = () => {
         <>
             <header>
                 <Typography variant="h2">Olá, caro usuário</Typography>
-                <Typography variant="body1">Seus projetos muito mair organizados. Veja as tarefas adicionadas por seu time, por você e para você</Typography>
+                <Typography variant="body2">Seus projetos muito mais organizados. Veja as tarefas adicionadas por seu time, por você e para você</Typography>
             </header>
-            <Typography variant="h3">Atividades Recentes: </Typography>
-            <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
+            <Box sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper", mt:"24px" }}>
+                <Typography variant="h3">Atividades Recentes: </Typography>
                 {tasks.map((task: IExample) => (
                     <List sx={{ width: "100%" }}>
                         <ListItem key={task._id}>
@@ -61,6 +62,9 @@ export const WelcomePage: React.FC = () => {
                         <Divider />
                     </List>
                 ))}
+                <Button>
+                    <Typography variant="h3">Minhas Tarefas</Typography>
+                </Button>
             </Box>
         </>
     )
