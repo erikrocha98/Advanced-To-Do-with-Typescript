@@ -12,11 +12,11 @@ import SysFormPlayground from '../../sysPages/pages/sysFormPlayground/sysFormPla
 
 export const pagesRouterList: (IRoute | null)[] = [
 	{
-		path: '/',
+		path: '/home',
 		exact: true,
 		component: Home,
 		isProtected: true,
-		resources: [HomeResources.HOME_VIEW]
+		
 	},
 	{
 		path: '/sysFormTests',
@@ -62,8 +62,11 @@ export const pagesRouterList: (IRoute | null)[] = [
 		templateVariant: 'None'
 	},
 	{
-		path:'/welcome-page',
+		path:'/',
 		component: WelcomePage,
-		templateVariant: 'None'
+		templateVariant: 'AppBar',
+		isProtected: true,
+		exact: true,
+		resources: [HomeResources.HOME_VIEW]
 	}
 ];
