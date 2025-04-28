@@ -9,8 +9,8 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Collapse from '@mui/material/Collapse';
 import { useContext } from 'react';
 
-const todoListView = () => {
-    const controller = React.useContext(contexto do todoList);
+const TodoListView = () => {
+    const controller = React.useContext();
 
     const [open, setOpen] = React.useState(true);
     const handleClick = () => {
@@ -34,4 +34,4 @@ const todoListView = () => {
     )
 }
 
-export default todoListView;
+export default TodoListView;
