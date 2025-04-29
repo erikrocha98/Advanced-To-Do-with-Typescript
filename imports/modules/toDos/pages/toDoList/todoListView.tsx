@@ -8,9 +8,12 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Collapse from '@mui/material/Collapse';
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { TodoListControllerContext } from './todoListController';
 
 const TodoListView = () => {
-    const controller = React.useContext();
+    const controller = React.useContext(TodoListControllerContext);
+    const navigate = useNavigate();
 
     const [open, setOpen] = React.useState(true);
     const handleClick = () => {

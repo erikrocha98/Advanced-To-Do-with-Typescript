@@ -11,7 +11,7 @@ export interface ITodoModuleContext {
 
 export const TodoModuleContext = React.createContext<ITodoModuleContext>({});
 
-export default (props: IDefaultContainerProps) => {
+const TodoContainer= (props: IDefaultContainerProps) => {
     let {screenState, todoId} = useParams();
     const state = screenState ?? props.screenState;
     const id = todoId ?? props.id;
@@ -27,3 +27,4 @@ export default (props: IDefaultContainerProps) => {
     };
     return <TodoModuleContext.Provider value={providerValue}>{renderPage()}</TodoModuleContext.Provider>
 }
+export default TodoContainer;

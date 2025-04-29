@@ -9,6 +9,7 @@ class TodoApi extends ProductBase<ITodo>{
             enableSubscribeObserver: true
         })
     }
+    showRecentTasks = (callback: (error:Meteor.Error, result:ITodo[])=>void) => this.callMethod('showRecentTasks', {}, callback);
 }
 
 export const todoApi = new TodoApi();
