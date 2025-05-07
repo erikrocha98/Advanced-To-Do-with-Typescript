@@ -22,8 +22,8 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 					projection: { title: 1, type: 1, typeMulti: 1, createdat: 1 }
 				});
 			},
-			(doc: ITodo & { nomeUsuario: string }) => {
-				const userProfileDoc = userprofileServerApi.getCollectionInstance().findOne({ _id: doc.createdby });
+			async (doc: ITodo & { nomeUsuario: string }) => {
+				const userProfileDoc =await userprofileServerApi.getCollectionInstance().findOneAsync({ _id: doc.createdby });
 				return { ...doc };
 			}
 		);
@@ -78,6 +78,7 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 			['get']
 		);*/
 		this.registerMethod('showRecentTasks', this.showRecentTasks.bind(this));
+		this.registerMethod('showAllTasks', this.showAllTasks.bind(this)); 
 	}
 	showRecentTasks(): ITodo[] {
         return this.getCollectionInstance().find(
@@ -87,7 +88,16 @@ class TodoServerApi extends ProductServerBase<ITodo> {
                 limit: 5
             }
         ).fetch();
-    } 
+    }
+
+	showAllTasks(): ITodo[]{
+		return this.getCollectionInstance().find(
+			{},
+			{
+				sort: {createdat: 1},
+			}
+		).fetch();
+	} 
 }
 
 export const todoServerApi = new TodoServerApi();

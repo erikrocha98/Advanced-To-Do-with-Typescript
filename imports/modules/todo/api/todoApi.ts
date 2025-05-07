@@ -10,6 +10,7 @@ class TodoApi extends ProductBase<ITodo> {
 		});
 	}
 	showRecentTasks = (callback: (error:Meteor.Error, result:ITodo[])=>void) => this.callMethod('showRecentTasks', {}, callback);
+	showAllTasks = (callback: (error:Meteor.Error, result:ITodo[])=>void) => this.callMethod('showAllTasks', {}, callback);
 }
 
 export const todoApi = new TodoApi();

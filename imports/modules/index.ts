@@ -6,12 +6,12 @@ import Todo from './todo/config';
 
 const pages: Array<IRoute | null> = [
 	...UserProfile.pagesRouterList,
+	...Example.pagesRouterList,
 	...Todo.pagesRouterList
 ];
 
 const menuItens: Array<IAppMenu | null> = [
 	...Example.pagesMenuItemList, 
-	...Aniversario.pagesMenuItemList,
 	...UserProfile.pagesMenuItemList,
 	...Todo.pagesMenuItemList
 ];

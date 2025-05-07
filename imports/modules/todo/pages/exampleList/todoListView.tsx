@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -12,7 +12,6 @@ import TodoListStyles from './todoListStyles';
 import SysTextField from '/imports/ui/components/sysFormFields/sysTextField/sysTextField';
 import { SysSelectField } from '/imports/ui/components/sysFormFields/sysSelectField/sysSelectField';
 import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
@@ -25,6 +24,14 @@ import {
 } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { ITodo } from '../../api/todoSch';
+import { todoApi } from '../../api/todoApi';
+import Divider from '@mui/material/Divider';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 const TodoListView = () => {
@@ -32,11 +39,22 @@ const TodoListView = () => {
 	const controller = React.useContext(TodoListControllerContext);
 	const sysLayoutContext = React.useContext<IAppLayoutContext>(AppLayoutContext);
 	const navigate = useNavigate();
-	const tarefas = [
-		'Selecionar participantes para o primeiro grupo focal',
-		'Elaborar roteiro do grupo focal',
-		'Realizar atividade'
-	];
+
+	const [tarefas, setTarefas] = useState<ITodo[]>([]);
+	useEffect(() => {
+		todoApi.showAllTasks((error, result) => {
+			if (error) {
+				return sysLayoutContext.showNotification({
+					type: "error",
+					title: "Erro ao carregar tarefas",
+					message: `${error}`,
+				});
+			} else {
+				setTarefas(result);
+			}
+		});
+	}, []);
+
 	const {
 		Container,
 		LoadingContainer,
@@ -69,10 +87,11 @@ const TodoListView = () => {
 						<ListItem
 							secondaryAction={
 								<IconButton onClick={() => setOpen(!open)} edge="start">
-									{open ? <ExpandLess/> : <ExpandMore/>}
+									{open ? <ExpandLess /> : <ExpandMore />}
 								</IconButton>
 							}
 						>
+							
 							<ListItemText
 								primary={
 									<Typography variant="h6">Não Concluídas ({tarefas.length})</Typography>
@@ -81,19 +100,39 @@ const TodoListView = () => {
 						</ListItem>
 
 						<Collapse in={open} timeout="auto" unmountOnExit>
-							{tarefas.map((tarefa, index) => (
-								<ListItem key={index}>
-									<ListItemIcon>
-										<Checkbox
-											edge="start"
-											tabIndex={-1}
-											disableRipple
-										/>
-									</ListItemIcon>
-									<ListItemText primary={tarefa} secondary="Criada por: Você" />
-								</ListItem>
+							{tarefas.map((tarefa: ITodo) => (
+								<Box>
+									<Divider/>
+									<ListItem key={tarefa._id}>
+										<ListItemIcon>
+											<Checkbox
+												edge="start"
+												tabIndex={-1}
+												disableRipple
+												icon={<RadioButtonUncheckedIcon />}
+												checkedIcon={<CheckCircleIcon />}
+											/>
+											
+										</ListItemIcon>
+										<ListItemIcon>
+											<AssignmentIcon/>
+										</ListItemIcon>
+										<ListItemText primary={tarefa.description} secondary="Criada por: Você" />
+										<IconButton onClick={()=>{navigate('/todo/edit/:_id')}}>
+											<EditNoteIcon/>
+										</IconButton>
+										<IconButton sx={{color: "#f44336"}}>
+											<DeleteIcon/>
+										</IconButton>
+									
+	
+									</ListItem>
+									<Divider/>
+								</Box>
 							))}
+							
 						</Collapse>
+						
 					</List>
 					{/* <ComplexTable
 						data={controller.todoList}
