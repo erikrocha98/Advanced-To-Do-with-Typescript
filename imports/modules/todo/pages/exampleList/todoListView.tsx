@@ -15,7 +15,7 @@ import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
-import {List,ListItem,ListItemIcon,ListItemText,Checkbox,} from '@mui/material';
+import { List, ListItem, ListItemIcon, ListItemText, Checkbox, } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
@@ -42,7 +42,7 @@ const TodoListView = () => {
 	} = TodoListStyles;
 
 	const options = [{ value: '', label: 'Nenhum' }, ...(controller.schema.type.options?.() ?? [])];
-	
+
 	useEffect(() => {
 		todoApi.showAllTasks((error, result) => {
 			if (error) {
@@ -53,6 +53,10 @@ const TodoListView = () => {
 			}
 		});
 	}, []);
+
+	const handleDelete = (taskId: string) => {
+
+	}
 
 	return (
 		<Container>
@@ -129,7 +133,14 @@ const TodoListView = () => {
 										<IconButton onClick={() => navigate(`/todo/edit/${tarefa._id}`)}>
 											<EditNoteIcon />
 										</IconButton>
-										<IconButton sx={{ color: "#f44336" }}>
+										<IconButton onClick={() => {
+											const idTarefa = tarefa._id?.toString() ?? '';
+											controller.onDeleteTask(idTarefa);
+											// Atualiza no frontend (estado local)
+											setTarefas((prev) =>
+												prev.filter((t) => t._id !== idTarefa)
+											);
+										}} sx={{ color: "#f44336" }}>
 											<DeleteIcon />
 										</IconButton>
 

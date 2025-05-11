@@ -25,6 +25,7 @@ interface ITodoListContollerContext {
 	onChangeTextField: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	onChangeCategory: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	onChangeCheckbox: (taskId: string, value: boolean) => void;
+	onDeleteTask : (taskId: string) => void;
 }
 
 export const TodoListControllerContext = React.createContext<ITodoListContollerContext>(
@@ -76,6 +77,15 @@ const TodoListController = () => {
 			}
 		});
 	};
+	const onDeleteTask = (taskId: string) => {
+		todoApi.removeTask(taskId, (error) => {
+			if (error) {
+				console.error('Erro ao deletar a tarefa:', error.reason);
+			} else {
+				console.warn('Tarefa deletada com sucesso!');
+			}
+		});
+	}
 	const onAddButtonClick = useCallback(() => {
 		const newDocumentId = nanoid();
 		navigate(`/todo/create/${newDocumentId}`);
@@ -121,6 +131,7 @@ const TodoListController = () => {
 			onChangeTextField,
 			onChangeCategory: onSelectedCategory,
 			onChangeCheckbox,
+			onDeleteTask
 		}),
 		[todos, loading]
 	);

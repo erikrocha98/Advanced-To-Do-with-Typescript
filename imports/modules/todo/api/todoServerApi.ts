@@ -80,6 +80,7 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 		this.registerMethod('showRecentTasks', this.showRecentTasks.bind(this));
 		this.registerMethod('showAllTasks', this.showAllTasks.bind(this));
 		this.registerMethod('updateTask', this.updateTask.bind(this))
+		this.registerMethod('removeTask', this.removeTask.bind(this));
 	}
 	showRecentTasks(): ITodo[] {
 		return this.getCollectionInstance().find(
@@ -119,17 +120,11 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 		return result > 0;
 	}
 
-	/* "tasks.updateStatus": async function ({_id,taskStatus}){
-        const task = await TasksCollection.findOneAsync(_id);
-        if (!this.userId || task?.userId!==this.userId){
-            throw new Meteor.Error("Não Autorizado");
-        }
-        return TasksCollection.updateAsync(_id,  {
-            $set:{
-                taskStatus
-            }
-        });
-    } */
+	async removeTask (taskId: string) {
+		const TaskCollection = await this.getCollectionInstance();
+		const tarefa_a_ser_deletada = TaskCollection.findOneAsync(taskId);
+		return TaskCollection.removeAsync(taskId);
+	}
 }
 
 export const todoServerApi = new TodoServerApi();
