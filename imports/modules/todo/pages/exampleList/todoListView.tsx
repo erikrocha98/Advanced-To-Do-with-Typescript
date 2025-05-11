@@ -15,13 +15,7 @@ import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
-import {
-	List,
-	ListItem,
-	ListItemIcon,
-	ListItemText,
-	Checkbox,
-} from '@mui/material';
+import {List,ListItem,ListItemIcon,ListItemText,Checkbox,} from '@mui/material';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
@@ -39,21 +33,7 @@ const TodoListView = () => {
 	const controller = React.useContext(TodoListControllerContext);
 	const sysLayoutContext = React.useContext<IAppLayoutContext>(AppLayoutContext);
 	const navigate = useNavigate();
-
 	const [tarefas, setTarefas] = useState<ITodo[]>([]);
-	useEffect(() => {
-		todoApi.showAllTasks((error, result) => {
-			if (error) {
-				return sysLayoutContext.showNotification({
-					type: "error",
-					title: "Erro ao carregar tarefas",
-					message: `${error}`,
-				});
-			} else {
-				setTarefas(result);
-			}
-		});
-	}, []);
 
 	const {
 		Container,
@@ -62,9 +42,18 @@ const TodoListView = () => {
 	} = TodoListStyles;
 
 	const options = [{ value: '', label: 'Nenhum' }, ...(controller.schema.type.options?.() ?? [])];
-	const handleClick = () => {
-		setOpen(!open);
-	}
+	
+	useEffect(() => {
+		todoApi.showAllTasks((error, result) => {
+			if (error) {
+				return console.log('erro ao carregar as tarefas')
+
+			} else {
+				setTarefas(result);
+			}
+		});
+	}, []);
+
 	return (
 		<Container>
 			<Typography variant="h5">Lista de Tarefas</Typography>
@@ -91,48 +80,67 @@ const TodoListView = () => {
 								</IconButton>
 							}
 						>
-							
+
 							<ListItemText
 								primary={
-									<Typography variant="h6">Não Concluídas ({tarefas.length})</Typography>
+									<Typography variant="h6">Total de Tarefas ({tarefas.length})</Typography>
 								}
 							/>
 						</ListItem>
 
 						<Collapse in={open} timeout="auto" unmountOnExit>
 							{tarefas.map((tarefa: ITodo) => (
-								<Box>
-									<Divider/>
+								<Box key={tarefa._id}>
+									<Divider />
 									<ListItem key={tarefa._id}>
 										<ListItemIcon>
 											<Checkbox
 												edge="start"
 												tabIndex={-1}
-												disableRipple
 												icon={<RadioButtonUncheckedIcon />}
 												checkedIcon={<CheckCircleIcon />}
+												checked={!!tarefa.statusTask}
+												onChange={async (e) => {
+													const novoStatus = e.target.checked;
+													const idTarefa = tarefa._id?.toString() ?? '';
+
+													// Atualiza no backend
+													await controller.onChangeCheckbox(idTarefa, novoStatus);
+
+													// Atualiza no frontend (estado local)
+													setTarefas((prev) =>
+														prev.map((t) =>
+															t._id === idTarefa ? { ...t, statusTask: novoStatus } : t
+														)
+													);
+												}}
 											/>
-											
+
 										</ListItemIcon>
 										<ListItemIcon>
-											<AssignmentIcon/>
+											<AssignmentIcon />
 										</ListItemIcon>
-										<ListItemText primary={tarefa.description} secondary="Criada por: Você" />
-										<IconButton onClick={()=>{navigate('/todo/edit/:_id')}}>
-											<EditNoteIcon/>
+										<ListItemText
+											primary={
+												<Typography sx={{ textDecoration: tarefa.statusTask ? 'line-through' : 'none' }}>
+													{tarefa.description}
+												</Typography>
+											} secondary="Criada por: Você" />
+										<IconButton onClick={() => navigate(`/todo/edit/${tarefa._id}`)}>
+											<EditNoteIcon />
 										</IconButton>
-										<IconButton sx={{color: "#f44336"}}>
-											<DeleteIcon/>
+										<IconButton sx={{ color: "#f44336" }}>
+											<DeleteIcon />
 										</IconButton>
-									
-	
+
+
 									</ListItem>
-									<Divider/>
+									<Divider />
 								</Box>
 							))}
-							
+
 						</Collapse>
-						
+
 					</List>
 					{/* <ComplexTable
 						data={controller.todoList}

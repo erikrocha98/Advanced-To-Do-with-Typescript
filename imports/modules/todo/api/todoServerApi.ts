@@ -23,7 +23,7 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 				});
 			},
 			async (doc: ITodo & { nomeUsuario: string }) => {
-				const userProfileDoc =await userprofileServerApi.getCollectionInstance().findOneAsync({ _id: doc.createdby });
+				const userProfileDoc = await userprofileServerApi.getCollectionInstance().findOneAsync({ _id: doc.createdby });
 				return { ...doc };
 			}
 		);
@@ -43,7 +43,7 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 					statusToggle: 1,
 					slider: 1,
 					check: 1,
-					address: 1
+					address: 1,
 				}
 			});
 		});
@@ -78,26 +78,58 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 			['get']
 		);*/
 		this.registerMethod('showRecentTasks', this.showRecentTasks.bind(this));
-		this.registerMethod('showAllTasks', this.showAllTasks.bind(this)); 
+		this.registerMethod('showAllTasks', this.showAllTasks.bind(this));
+		this.registerMethod('updateTask', this.updateTask.bind(this))
 	}
 	showRecentTasks(): ITodo[] {
-        return this.getCollectionInstance().find(
-            {},
-            {
-                sort: { createdat: -1 },
-                limit: 5
-            }
-        ).fetch();
-    }
-
-	showAllTasks(): ITodo[]{
 		return this.getCollectionInstance().find(
 			{},
 			{
-				sort: {createdat: 1},
+				sort: { createdat: -1 },
+				limit: 5
 			}
 		).fetch();
-	} 
+	}
+
+	showAllTasks(): ITodo[] {
+		return this.getCollectionInstance().find(
+			{},
+			{
+				sort: { createdat: 1 },
+			}
+		).fetch();
+	}
+
+	async updateTask(taskId: string, status: boolean): Promise<boolean> {
+		console.log(`Atualizando tarefa: taskId=${taskId}, novoStatus=${status}`);
+		const TaskCollection = await this.getCollectionInstance();
+		const result = await TaskCollection.updateAsync(
+			{ _id: taskId },
+			{
+				$set: {
+					statusTask: status
+				}
+			}
+		)
+		console.log('Atualizando tarefa:', {
+			taskId,
+			status,
+			typeOfNewStatus: typeof status
+		});
+		return result > 0;
+	}
+
+	/* "tasks.updateStatus": async function ({_id,taskStatus}){
+        const task = await TasksCollection.findOneAsync(_id);
+        if (!this.userId || task?.userId!==this.userId){
+            throw new Meteor.Error("Não Autorizado");
+        }
+        return TasksCollection.updateAsync(_id,  {
+            $set:{
+                taskStatus
+            }
+        });
+    } */
 }
 
 export const todoServerApi = new TodoServerApi();

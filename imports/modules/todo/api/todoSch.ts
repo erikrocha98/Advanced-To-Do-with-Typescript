@@ -117,6 +117,12 @@ export const todoSch: ISchema<ITodo> = {
 				label: 'Descrição da Tarefa',
 				defaultValue: '',
 				optional: true
+			},
+			statusTask: {
+				type: Boolean,
+				label: 'Concluída?',
+				defaultValue: false, 
+				optional: true
 			}
 		}
 	},
@@ -154,7 +160,8 @@ export const todoSch: ISchema<ITodo> = {
 		label: 'Exigir comprovação',
 		defaultValue: false,
 		optional: true
-	}
+	},
+	
 };
 
 export interface ITodo extends IDoc {
@@ -174,4 +181,5 @@ export interface ITodo extends IDoc {
 	slider: number;
 	statusRadio: string;
 	statusToggle: boolean;
+	statusTask: boolean;
 }

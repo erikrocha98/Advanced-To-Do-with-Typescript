@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import TodoListView from './todoListView';
 import { nanoid } from 'nanoid';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,8 @@ import { useTracker } from 'meteor/react-meteor-data';
 import { ISchema } from '/imports/typings/ISchema';
 import { ITodo } from '../../api/todoSch';
 import { todoApi } from '../../api/todoApi';
+
+
 
 interface IInitialConfig {
 	sortProperties: { field: string; sortAscending: boolean };
@@ -22,6 +24,7 @@ interface ITodoListContollerContext {
 	loading: boolean;
 	onChangeTextField: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	onChangeCategory: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	onChangeCheckbox: (taskId: string, value: boolean) => void;
 }
 
 export const TodoListControllerContext = React.createContext<ITodoListContollerContext>(
@@ -59,6 +62,20 @@ const TodoListController = () => {
 		};
 	}, [config]);
 
+	
+
+	const onChangeCheckbox = (taskId: string, value: boolean) => {
+		todoApi.updateTask(taskId, value, (error, result) => {
+			if (error) {
+				console.error('Erro ao atualizar tarefa:', error.reason);
+			} else if (result) {
+				console.log('Tarefa atualizada com sucesso');
+
+			} else {
+				console.warn('Nenhuma tarefa foi modificada');
+			}
+		});
+	};
 	const onAddButtonClick = useCallback(() => {
 		const newDocumentId = nanoid();
 		navigate(`/todo/create/${newDocumentId}`);
@@ -102,7 +119,8 @@ const TodoListController = () => {
 			schema: todoSchReduzido,
 			loading,
 			onChangeTextField,
-			onChangeCategory: onSelectedCategory
+			onChangeCategory: onSelectedCategory,
+			onChangeCheckbox,
 		}),
 		[todos, loading]
 	);
