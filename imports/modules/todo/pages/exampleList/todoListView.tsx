@@ -53,11 +53,9 @@ const TodoListView = () => {
 			}
 		});
 	}, []);
+	const usuario = Meteor.user();
 
-	const handleDelete = (taskId: string) => {
-
-	}
-
+	
 	return (
 		<Container>
 			<Typography variant="h5">Lista de Tarefas</Typography>
@@ -129,7 +127,7 @@ const TodoListView = () => {
 												<Typography sx={{ textDecoration: tarefa.statusTask ? 'line-through' : 'none' }}>
 													{tarefa.description}
 												</Typography>
-											} secondary="Criada por: Você" />
+											} secondary={usuario? usuario.username: ""} />
 										<IconButton onClick={() => navigate(`/todo/edit/${tarefa._id}`)}>
 											<EditNoteIcon />
 										</IconButton>

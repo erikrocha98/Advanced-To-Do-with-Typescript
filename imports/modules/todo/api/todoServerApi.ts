@@ -82,6 +82,8 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 		this.registerMethod('updateTask', this.updateTask.bind(this))
 		this.registerMethod('removeTask', this.removeTask.bind(this));
 	}
+
+
 	showRecentTasks(): ITodo[] {
 		return this.getCollectionInstance().find(
 			{},
@@ -104,6 +106,13 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 	async updateTask(taskId: string, status: boolean): Promise<boolean> {
 		console.log(`Atualizando tarefa: taskId=${taskId}, novoStatus=${status}`);
 		const TaskCollection = await this.getCollectionInstance();
+		const tarefa = TaskCollection.findOne(taskId);
+		const usuario = Meteor.user();
+
+		if (tarefa.createdby!= usuario?._id){
+			throw new Meteor.Error('Acesso negado', 'Você não é o criador desta tarefa');
+		}
+
 		const result = await TaskCollection.updateAsync(
 			{ _id: taskId },
 			{
@@ -122,7 +131,13 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 
 	async removeTask (taskId: string) {
 		const TaskCollection = await this.getCollectionInstance();
-		const tarefa_a_ser_deletada = TaskCollection.findOneAsync(taskId);
+		const tarefa = TaskCollection.findOne(taskId);
+		const usuario = Meteor.user();
+
+		if (tarefa.createdby!= usuario?._id){
+			throw new Meteor.Error('Acesso negado', 'Você não é o criador desta tarefa');
+		}
+
 		return TaskCollection.removeAsync(taskId);
 	}
 }

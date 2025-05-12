@@ -18,7 +18,6 @@ interface IInitialConfig {
 
 interface ITodoListContollerContext {
 	onAddButtonClick: () => void;
-	onDeleteButtonClick: (row: any) => void;
 	todoList: ITodo[];
 	schema: ISchema<any>;
 	loading: boolean;
@@ -91,10 +90,6 @@ const TodoListController = () => {
 		navigate(`/todo/create/${newDocumentId}`);
 	}, []);
 
-	const onDeleteButtonClick = useCallback((row: any) => {
-		todoApi.remove(row);
-	}, []);
-
 	const onChangeTextField = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
 		const delayedSearch = setTimeout(() => {
@@ -124,7 +119,6 @@ const TodoListController = () => {
 	const providerValues: ITodoListContollerContext = useMemo(
 		() => ({
 			onAddButtonClick,
-			onDeleteButtonClick,
 			todoList: todos,
 			schema: todoSchReduzido,
 			loading,

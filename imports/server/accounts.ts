@@ -40,6 +40,8 @@ function updateUserProfileImageFromURL(userId: string | Mongo.ObjectID | Mongo.S
 	);
 }
 
+
+
 async function validateSocialLoginAndUpdateProfile(
 	userProfile: {
 		_id: string | Mongo.ObjectID | Mongo.Selector<any>;
