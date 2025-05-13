@@ -57,6 +57,9 @@ const SignInPage: React.FC = () => {
 							<Button variant="text" sx={{ alignSelf: 'flex-end' }} onClick={handleForgotPassword}>
 								<Typography variant="link">Esqueci minha senha</Typography>
 							</Button>
+							<Button variant= "text" sx={{alignSelf: 'flex-end'}} onClick={()=>navigate('/signup')}>
+								<Typography variant="link"> Novo por aqui? Faça seu cadastro</Typography>
+							</Button>
 							<Box />
 							<SysFormButton variant="contained" color="primary" endIcon={<SysIcon name={'arrowForward'} />}>
 								Entrar

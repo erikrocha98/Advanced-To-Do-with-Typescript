@@ -20,7 +20,7 @@ interface IUserProfileEstendido extends IUserProfile {
  * Return Logged User if exists.
  * @return {Object} Logged User
  */
-export const getUserServer = async (connection?: { id: string } | null): IUserProfile => {
+export const getUserServer = async (connection?: { id: string } | null): Promise<IUserProfile> => {
 	const user: (User & IMeteorUser) | null = await Meteor.userAsync();
 
 	try {
@@ -59,7 +59,7 @@ class UserProfileServerApi extends ProductServerBase<IUserProfile> {
 		this.addPublicationMeteorUsers();
 		this.addUserProfileProfilePublication();
 		this.serverInsert = this.serverInsert.bind(this);
-		this.afterInsert = this.afterInsert.bind(this);
+		/* this.afterInsert = this.afterInsert.bind(this); */
 		this.beforeInsert = this.beforeInsert.bind(this);
 		this.beforeUpdate = this.beforeUpdate.bind(this);
 		this.beforeRemove = this.beforeRemove.bind(this);
@@ -68,9 +68,9 @@ class UserProfileServerApi extends ProductServerBase<IUserProfile> {
 
 		this.noImagePath = `${Meteor.absoluteUrl()}images/wireframe/user_no_photo.png`;
 
-		this.afterInsert = this.afterInsert.bind(this);
+		/* this.afterInsert = this.afterInsert.bind(this); */
 
-		this.registerMethod('sendVerificationEmail', async (userData: IUserProfile) => {
+		/* this.registerMethod('sendVerificationEmail', async (userData: IUserProfile) => {
 			check(userData, Object);
 			if (Meteor.isServer && userData) {
 				if (userData._id) {
@@ -82,7 +82,7 @@ class UserProfileServerApi extends ProductServerBase<IUserProfile> {
 					Accounts.sendVerificationEmail(user?._id ?? '');
 				}
 			}
-		});
+		}); */
 
 		this.registerMethod('sendResetPasswordEmail', async (userData: IUserProfile) => {
 			check(userData, Object);
@@ -149,7 +149,7 @@ class UserProfileServerApi extends ProductServerBase<IUserProfile> {
 			} else {
 				userprofile._id = await Accounts.createUser({
 					username: userprofile.email,
-					email: userprofile.email
+					email: userprofile.email,
 				});
 			}
 		}
@@ -255,7 +255,7 @@ class UserProfileServerApi extends ProductServerBase<IUserProfile> {
 
 				dataObj.password = password;
 
-				this.afterInsert(dataObj, context);
+				/* this.afterInsert(dataObj, context); */
 				if (context.rest) {
 					context.rest.response.statusCode = 201;
 				}
@@ -349,7 +349,7 @@ class UserProfileServerApi extends ProductServerBase<IUserProfile> {
 		return super.beforeInsert(docObj, context);
 	}
 
-	async afterInsert(doc: IUserProfileEstendido, _context: IContext) {
+	/* async afterInsert(doc: IUserProfileEstendido, _context: IContext) {
 		if (Meteor.isServer) {
 			if (doc.password) {
 				Accounts.sendVerificationEmail(doc._id!);
@@ -357,7 +357,7 @@ class UserProfileServerApi extends ProductServerBase<IUserProfile> {
 				Accounts.sendEnrollmentEmail(doc._id!);
 			}
 		}
-	}
+	} */
 
 	async beforeUpdate(docObj: IUserProfile, context: IContext) {
 		const user: IUserProfile = await getUserServer();

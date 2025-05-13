@@ -9,9 +9,9 @@ import { IMeteorError } from '/imports/typings/BoilerplateDefaultTypings';
 
 class UserProfileApi extends OfflineBaseApi {
 	constructor() {
-		super('userprofile', userProfileSch);
+		super('userprofile', userProfileSch,{});
 		this.insertNewUser = this.insertNewUser.bind(this);
-		this.noImagePath = `${Meteor.absoluteUrl()}images/wireframe/user_no_photo.png`;
+		/* this.noImagePath = `${Meteor.absoluteUrl()}images/wireframe/user_no_photo.png`; */
 		// @ts-ignore
 		userprofileData.collectionInstance = this.collectionInstance; //create globalvar userprofileData
 	}

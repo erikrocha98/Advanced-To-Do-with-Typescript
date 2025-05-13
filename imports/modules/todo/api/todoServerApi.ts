@@ -44,6 +44,7 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 					slider: 1,
 					check: 1,
 					address: 1,
+					isPersonal:1
 				}
 			});
 		});
@@ -79,8 +80,9 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 		);*/
 		this.registerMethod('showRecentTasks', this.showRecentTasks.bind(this));
 		this.registerMethod('showAllTasks', this.showAllTasks.bind(this));
-		this.registerMethod('updateTask', this.updateTask.bind(this))
+		this.registerMethod('updateTask', this.updateTask.bind(this));
 		this.registerMethod('removeTask', this.removeTask.bind(this));
+		this.registerMethod('searchTask', this.searchTask.bind(this));
 	}
 
 
@@ -128,7 +130,7 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 		});
 		return result > 0;
 	}
-
+	
 	async removeTask (taskId: string) {
 		const TaskCollection = await this.getCollectionInstance();
 		const tarefa = TaskCollection.findOne(taskId);
@@ -139,6 +141,13 @@ class TodoServerApi extends ProductServerBase<ITodo> {
 		}
 
 		return TaskCollection.removeAsync(taskId);
+	}
+
+	async searchTask (searchText: string){
+		const TaskCollection = await this.getCollectionInstance();
+		return TaskCollection.find({
+			description:{$regex: searchText, $options:'i'}
+		}).fetch();
 	}
 }
 

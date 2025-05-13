@@ -28,6 +28,7 @@ export const WelcomePage: React.FC = () => {
     const sysLayoutContext = useContext<IAppLayoutContext>(AppLayoutContext);
     const { showNotification } = useContext<IAppLayoutContext>(AppLayoutContext);
     const navigate = useNavigate();
+    const usuario = Meteor.user();
     useEffect(() => {
         todoApi.showRecentTasks((error, result) => {
             if (error) {
@@ -59,7 +60,7 @@ export const WelcomePage: React.FC = () => {
                                         checkedIcon={<CheckCircleIcon />}
                                     />
                                 </ListItemIcon>
-                                <ListItemText primary={task.description} secondary="usuário X" />
+                                <ListItemText primary={task.description} secondary={usuario? usuario.username: ""}/>
                             </ListItemButton>
 
                         </ListItem>

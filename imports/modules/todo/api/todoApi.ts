@@ -17,6 +17,9 @@ class TodoApi extends ProductBase<ITodo> {
 	removeTask = (taskId: string, callback: (error: Meteor.Error) => void) => {
 		this.callMethod('removeTask', taskId , callback);
 	};
+	searchTask = (searchText: string, callback: (error: Meteor.Error) => void) => {
+		this.callMethod('searchTask', searchText , callback);
+	};
 }
 
 export const todoApi = new TodoApi();

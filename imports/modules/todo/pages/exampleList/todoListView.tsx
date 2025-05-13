@@ -9,13 +9,11 @@ import { ComplexTable } from '/imports/ui/components/ComplexTable/ComplexTable';
 import DeleteDialog from '/imports/ui/appComponents/showDialog/custom/deleteDialog/deleteDialog';
 import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';
 import TodoListStyles from './todoListStyles';
-import SysTextField from '/imports/ui/components/sysFormFields/sysTextField/sysTextField';
-import { SysSelectField } from '/imports/ui/components/sysFormFields/sysSelectField/sysSelectField';
 import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
-import { List, ListItem, ListItemIcon, ListItemText, Checkbox, } from '@mui/material';
+import { List, ListItem, ListItemIcon, ListItemText, Checkbox, TextField, InputAdornment, } from '@mui/material';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
@@ -26,6 +24,7 @@ import Divider from '@mui/material/Divider';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 
 
 const TodoListView = () => {
@@ -34,6 +33,7 @@ const TodoListView = () => {
 	const sysLayoutContext = React.useContext<IAppLayoutContext>(AppLayoutContext);
 	const navigate = useNavigate();
 	const [tarefas, setTarefas] = useState<ITodo[]>([]);
+	const[search, setSearch]= useState<string>('');
 
 	const {
 		Container,
@@ -53,18 +53,33 @@ const TodoListView = () => {
 			}
 		});
 	}, []);
+
+	/* useEffect(() => {
+		const timeout = setTimeout(() => {
+			Meteor.call('tasks.search', search, (error, result) => {
+				if (!error) setResults(result);
+			});
+		}, 300); // debounce de 300ms
+
+		return () => clearTimeout(timeout);
+	}, [search]); */
 	const usuario = Meteor.user();
 
-	
+
 	return (
 		<Container>
 			<Typography variant="h5">Lista de Tarefas</Typography>
 			<SearchContainer>
-				<SysTextField
-					name="search"
-					placeholder="Pesquisar por nome"
-					onChange={controller.onChangeTextField}
-					startAdornment={<SysIcon name={'search'} />}
+				<TextField
+					placeholder="Pesquisar tarefa"
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position="start">
+								<SearchIcon />
+							</InputAdornment>
+						),
+					}}
+
 				/>
 			</SearchContainer>
 			{controller.loading ? (
@@ -127,7 +142,7 @@ const TodoListView = () => {
 												<Typography sx={{ textDecoration: tarefa.statusTask ? 'line-through' : 'none' }}>
 													{tarefa.description}
 												</Typography>
-											} secondary={usuario? usuario.username: ""} />
+											} secondary={tarefa.isPersonal} />
 										<IconButton onClick={() => navigate(`/todo/edit/${tarefa._id}`)}>
 											<EditNoteIcon />
 										</IconButton>
@@ -187,3 +202,7 @@ const TodoListView = () => {
 };
 
 export default TodoListView;
+
+
+
+/* usuario? usuario.username: "" */

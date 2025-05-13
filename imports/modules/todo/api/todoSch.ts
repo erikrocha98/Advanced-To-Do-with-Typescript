@@ -23,7 +23,7 @@ export const todoSch: ISchema<ITodo> = {
 		type: String,
 		label: 'Descrição',
 		defaultValue: '',
-		optional: true
+		optional: false
 	},
 
 	check: {
@@ -41,7 +41,7 @@ export const todoSch: ISchema<ITodo> = {
 		type: String,
 		label: 'Categoria',
 		defaultValue: '',
-		optional: false,
+		optional: true,
 		options: () => [
 			{ value: 'Categoria A', label: 'Categoria A' },
 			{ value: 'Categoria B', label: 'Categoria B' },
@@ -51,7 +51,7 @@ export const todoSch: ISchema<ITodo> = {
 	typeMulti: {
 		type: String,
 		label: 'Prioridade',
-		optional: false,
+		optional: true,
 		options: () => [
 			{ value: 'alta', label: 'Alta' },
 			{ value: 'media', label: 'Média' },
@@ -161,6 +161,12 @@ export const todoSch: ISchema<ITodo> = {
 		defaultValue: false,
 		optional: true
 	},
+	isPersonal:{
+		type: Boolean,
+		label: 'A tarefa é pessoal?',
+		defaultValue: false,
+		optional: true
+	}
 	
 };
 
@@ -182,4 +188,5 @@ export interface ITodo extends IDoc {
 	statusRadio: string;
 	statusToggle: boolean;
 	statusTask: boolean;
+	isPersonal: boolean;
 }

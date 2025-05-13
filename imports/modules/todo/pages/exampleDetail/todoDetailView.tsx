@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState} from 'react';
 import { TodoDetailControllerContext } from './todoDetailContoller';
 import { TodoModuleContext } from '../../todoContainer';
 import TodoDetailStyles from './todoDetailStyles';
@@ -15,6 +15,7 @@ import { SysUploadFile } from '/imports/ui/components/sysFormFields/sysUploadFil
 import SysSlider from '/imports/ui/components/sysFormFields/sysSlider/sysSliderField';
 import { SysLocationField } from '/imports/ui/components/sysFormFields/sysLocationField/sysLocationField';
 import SysIcon from '/imports/ui/components/sysIcon/sysIcon';
+import SysSwitch from '/imports/ui/components/sysFormFields/sysSwitch/sysSwitch';
 
 const TodoDetailView = () => {
 	const controller = useContext(TodoDetailControllerContext);
@@ -22,13 +23,14 @@ const TodoDetailView = () => {
 	const isView = state === 'view';
 	const isEdit = state === 'edit';
 	const isCreate = state === 'create';
-  const {
-    Container,
-    Body,
-    Header,
-    Footer,
-    FormColumn
-  } = TodoDetailStyles;
+
+	const {
+		Container,
+		Body,
+		Header,
+		Footer,
+		FormColumn
+	} = TodoDetailStyles;
 
 	return (
 		<Container>
@@ -55,8 +57,7 @@ const TodoDetailView = () => {
 				<Body>
 					<FormColumn>
 						<SysTextField name="title" placeholder="Ex.: Item XX" />
-						<SysSelectField name="type" placeholder="Selecionar" />
-						<SysRadioButton name="typeMulti" childrenAlignment="row" size="small" />
+						<SysSwitch name="isPersonal" label="A tarefa é pessoal?"/>
 						<SysTextField
 							name="description"
 							placeholder="Acrescente informações sobre o item (3 linhas)"
@@ -66,12 +67,6 @@ const TodoDetailView = () => {
 							showNumberCharactersTyped
 							max={200}
 						/>
-						<SysUploadFile name="files" />
-						<SysSlider name="slider" />
-						<SysLocationField name="address" />
-					</FormColumn>
-					<FormColumn>
-						<SysCheckBox name="check" childrenAlignment="row" />
 					</FormColumn>
 				</Body>
 				<Footer>
