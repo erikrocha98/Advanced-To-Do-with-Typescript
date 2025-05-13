@@ -33,8 +33,8 @@ const TodoListView = () => {
 	const sysLayoutContext = React.useContext<IAppLayoutContext>(AppLayoutContext);
 	const navigate = useNavigate();
 	const [tarefas, setTarefas] = useState<ITodo[]>([]);
-	const[search, setSearch]= useState<string>('');
-
+	const [search, setSearch] = useState<string>('');
+	
 	const {
 		Container,
 		LoadingContainer,
@@ -44,33 +44,40 @@ const TodoListView = () => {
 	const options = [{ value: '', label: 'Nenhum' }, ...(controller.schema.type.options?.() ?? [])];
 
 	useEffect(() => {
-		todoApi.showAllTasks((error, result) => {
-			if (error) {
-				return console.log('erro ao carregar as tarefas')
-
-			} else {
-				setTarefas(result);
-			}
-		});
-	}, []);
-
-	/* useEffect(() => {
 		const timeout = setTimeout(() => {
-			Meteor.call('tasks.search', search, (error, result) => {
-				if (!error) setResults(result);
+			todoApi.searchTask(search, (error: any, result: ITodo[]) => {
+				if (error) {
+					console.error('Erro na busca de tarefas:', error);
+				} else {
+					setTarefas(result);
+				}
 			});
-		}, 300); // debounce de 300ms
+		}, 1000); // debounce de 300ms
 
 		return () => clearTimeout(timeout);
-	}, [search]); */
-	const usuario = Meteor.user();
+	}, [search]);
 
+	useEffect(() => {
+		if (search === '') {
+			todoApi.showAllTasks((error, result) => {
+				if (error) {
+					console.error('Erro ao carregar as tarefas:', error);
+				} else {
+					setTarefas(result);
+				}
+			});
+		}
+	}, [search]);
+
+	const usuario = Meteor.user();
 
 	return (
 		<Container>
 			<Typography variant="h5">Lista de Tarefas</Typography>
 			<SearchContainer>
 				<TextField
+					value={search}
+					onChange={(e)=>setSearch(e.target.value)}
 					placeholder="Pesquisar tarefa"
 					InputProps={{
 						startAdornment: (
