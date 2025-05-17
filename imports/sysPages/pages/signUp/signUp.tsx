@@ -4,7 +4,7 @@
 // login page overrides the form’s submit event and call Meteor’s loginWithPassword()
 // Authentication errors modify the component’s state to be displayed
 import React from 'react';
-import { Link, NavigateFunction } from 'react-router-dom';
+import { Link, NavigateFunction, useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import TextField from '/imports/ui/components/SimpleFormFields/TextField/TextField';
 import Button from '@mui/material/Button';
@@ -22,6 +22,7 @@ interface ISignUp {
 }
 
 export const SignUp = (props: ISignUp) => {
+	const navigate = useNavigate();
 	const { showNotification } = props;
 
 	const handleSubmit = (doc: { email: string; password: string }) => {
@@ -37,12 +38,13 @@ export const SignUp = (props: ISignUp) => {
 						description: 'Erro ao fazer registro em nossa base de dados!'
 					});
 			} else {
-				showNotification &&
+				navigate('/home');
+				/* showNotification &&
 					showNotification({
 						type: 'sucess',
 						title: 'Cadastrado com sucesso!',
 						description: 'Registro de usuário realizado em nossa base de dados!'
-					});
+					}); */
 			}
 		});
 	};

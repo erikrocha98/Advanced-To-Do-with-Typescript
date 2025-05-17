@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState, useEffect, useContext } from 'react';
 import TodoListView from './todoListView';
 import { nanoid } from 'nanoid';
 import { useNavigate } from 'react-router-dom';
@@ -6,8 +6,7 @@ import { useTracker } from 'meteor/react-meteor-data';
 import { ISchema } from '/imports/typings/ISchema';
 import { ITodo } from '../../api/todoSch';
 import { todoApi } from '../../api/todoApi';
-
-
+import AppLayoutContext, { IAppLayoutContext } from '/imports/app/appLayoutProvider/appLayoutContext';
 
 interface IInitialConfig {
 	sortProperties: { field: string; sortAscending: boolean };
@@ -22,9 +21,9 @@ interface ITodoListContollerContext {
 	schema: ISchema<any>;
 	loading: boolean;
 	onChangeTextField: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	onChangeCategory: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	onChangeCheckbox: (taskId: string, value: boolean) => void;
-	onDeleteTask : (taskId: string) => void;
+	onDeleteTask: (taskId: string, tarefa: ITodo) => void;
+	onEditButtonClick: (tarefa: ITodo) => void
 }
 
 export const TodoListControllerContext = React.createContext<ITodoListContollerContext>(
@@ -44,6 +43,7 @@ const TodoListController = () => {
 	const { title, type, typeMulti } = todoApi.getSchema();
 	const todoSchReduzido = { title, type, typeMulti, createdat: { type: Date, label: 'Criado em' } };
 	const navigate = useNavigate();
+	const sysLayoutContext = useContext<IAppLayoutContext>(AppLayoutContext);
 
 	const { sortProperties, filter } = config;
 	const sort = {
@@ -62,33 +62,69 @@ const TodoListController = () => {
 		};
 	}, [config]);
 
-	
 
-	const onChangeCheckbox = (taskId: string, value: boolean) => {
+
+	const onChangeCheckbox = async (taskId: string, value: boolean) => {
 		todoApi.updateTask(taskId, value, (error, result) => {
 			if (error) {
-				console.error('Erro ao atualizar tarefa:', error.reason);
+				sysLayoutContext.showNotification({
+					type: "error",
+					message: 'Acesso Negado: Você não é o criador dessa tarefa!'
+				});
 			} else if (result) {
-				console.log('Tarefa atualizada com sucesso');
+				sysLayoutContext.showNotification({
+					type: "success",
+					message: 'Tarefa atualizada com sucesso!'
+				});
 
 			} else {
 				console.warn('Nenhuma tarefa foi modificada');
 			}
 		});
+
 	};
-	const onDeleteTask = (taskId: string) => {
-		todoApi.removeTask(taskId, (error) => {
-			if (error) {
-				console.error('Erro ao deletar a tarefa:', error.reason);
-			} else {
-				console.warn('Tarefa deletada com sucesso!');
-			}
-		});
-	}
+	const onDeleteTask = async (taskId: string, tarefa: ITodo) => {
+		const usuario = await Meteor.userAsync();
+		if (tarefa.createdby !== usuario?._id) {
+			sysLayoutContext.showNotification({
+				type: "error",
+				message: 'Acesso negado: você não é o criador dessa tarefa!'
+			});
+			throw new Meteor.Error("Acesso negado");
+		}
+		else {
+			todoApi.removeTask(taskId, (error) => {
+				if (error) {
+					console.error('Erro ao deletar a tarefa:', error.reason);
+				} else {
+					sysLayoutContext.showNotification({
+						type: "success",
+						message: 'Tarefa removida com sucesso!'
+					});
+				}
+			});
+		}
+	};
 	const onAddButtonClick = useCallback(() => {
 		const newDocumentId = nanoid();
 		navigate(`/todo/create/${newDocumentId}`);
 	}, []);
+
+	const onEditButtonClick = async (tarefa: ITodo) => {
+		try {
+			const usuario = await Meteor.userAsync();
+			if (tarefa.createdby !== usuario?._id) {
+				sysLayoutContext.showNotification({
+					type: "error",
+					message: 'Acesso negado: você não é o criador dessa tarefa!'
+				});
+				throw new Meteor.Error("Acesso negado");
+			}
+			navigate(`/todo/edit/${tarefa._id}`);
+		} catch (err) {
+			console.error(err);
+		}
+	};
 
 	const onChangeTextField = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
 		const { value } = event.target;
@@ -101,21 +137,6 @@ const TodoListController = () => {
 		return () => clearTimeout(delayedSearch);
 	}, []);
 
-	const onSelectedCategory = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-		const { value } = event.target;
-		if (!value) {
-			setConfig((prev) => ({
-				...prev,
-				filter: {
-					...prev.filter,
-					type: { $ne: null }
-				}
-			}));
-			return;
-		}
-		setConfig((prev) => ({ ...prev, filter: { ...prev.filter, type: value } }));
-	}, []);
-
 	const providerValues: ITodoListContollerContext = useMemo(
 		() => ({
 			onAddButtonClick,
@@ -123,9 +144,9 @@ const TodoListController = () => {
 			schema: todoSchReduzido,
 			loading,
 			onChangeTextField,
-			onChangeCategory: onSelectedCategory,
 			onChangeCheckbox,
-			onDeleteTask
+			onDeleteTask,
+			onEditButtonClick
 		}),
 		[todos, loading]
 	);

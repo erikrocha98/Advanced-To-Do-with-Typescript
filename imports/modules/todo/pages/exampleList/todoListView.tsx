@@ -69,8 +69,6 @@ const TodoListView = () => {
 		}
 	}, [search]);
 
-	const usuario = Meteor.user();
-
 	return (
 		<Container>
 			<Typography variant="h5">Lista de Tarefas</Typography>
@@ -149,13 +147,13 @@ const TodoListView = () => {
 												<Typography sx={{ textDecoration: tarefa.statusTask ? 'line-through' : 'none' }}>
 													{tarefa.description}
 												</Typography>
-											} secondary={tarefa.isPersonal} />
-										<IconButton onClick={() => navigate(`/todo/edit/${tarefa._id}`)}>
+											} secondary={tarefa.createdby || "desconhecido"} />
+										<IconButton onClick={() => controller.onEditButtonClick(tarefa)}>
 											<EditNoteIcon />
 										</IconButton>
 										<IconButton onClick={() => {
 											const idTarefa = tarefa._id?.toString() ?? '';
-											controller.onDeleteTask(idTarefa);
+											controller.onDeleteTask(idTarefa, tarefa);
 											// Atualiza no frontend (estado local)
 											setTarefas((prev) =>
 												prev.filter((t) => t._id !== idTarefa)
@@ -173,27 +171,6 @@ const TodoListView = () => {
 						</Collapse>
 
 					</List>
-					{/* <ComplexTable
-						data={controller.todoList}
-						schema={controller.schema}
-						onRowClick={(row) => navigate('/todo/view/' + row.id)}
-						searchPlaceholder={'Pesquisar exemplo'}
-						onEdit={(row) => navigate('/todo/edit/' + row._id)}
-						onDelete={(row) => {
-							DeleteDialog({
-								showDialog: sysLayoutContext.showDialog,
-								closeDialog: sysLayoutContext.closeDialog,
-								title: `Excluir dado ${row.title}`,
-								message: `Tem certeza que deseja excluir o arquivo ${row.title}?`,
-								onDeleteConfirm: () => {
-									controller.onDeleteButtonClick(row);
-									sysLayoutContext.showNotification({
-										message: 'Excluído com sucesso!'
-									});
-								}
-							});
-						}}
-					/> */}
 				</Box>
 			)}
 

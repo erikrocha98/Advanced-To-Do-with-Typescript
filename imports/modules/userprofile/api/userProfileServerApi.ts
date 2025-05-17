@@ -218,6 +218,7 @@ class UserProfileServerApi extends ProductServerBase<IUserProfile> {
 						{ _id: dataObj._id || insertId },
 						{
 							$set: {
+								'emails.0.verified': true,
 								profile: {
 									name: dataObj.username,
 									email: dataObj.email
@@ -276,12 +277,15 @@ class UserProfileServerApi extends ProductServerBase<IUserProfile> {
 	 */
 	async _includeAuditData(doc: IDoc, action: string, defaultUser: string = 'Anonymous') {
 		const user: IUserProfile = await getUserServer();
+		
 		if (action === 'insert') {
 			doc.createdby = user ? user._id : defaultUser;
 			doc.createdat = new Date();
 			doc.lastupdate = new Date();
+			
 		} else {
 			doc.lastupdate = new Date();
+			
 		}
 	}
 
