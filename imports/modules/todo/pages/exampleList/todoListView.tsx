@@ -21,11 +21,11 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { ITodo } from '../../api/todoSch';
 import { todoApi } from '../../api/todoApi';
 import Divider from '@mui/material/Divider';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
-
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
 
 const TodoListView = () => {
 	const [open, setOpen] = useState<boolean>(false);
@@ -140,7 +140,7 @@ const TodoListView = () => {
 
 										</ListItemIcon>
 										<ListItemIcon>
-											<AssignmentIcon />
+											{!tarefa.statusTask? <AssignmentOutlinedIcon />: <AssignmentTurnedInOutlinedIcon/>}
 										</ListItemIcon>
 										<ListItemText
 											primary={
